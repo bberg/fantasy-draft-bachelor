@@ -1,6 +1,4 @@
 var path = require('path');
-// var pg = require('pg');
-// var config = require(path.join(__dirname, '../', '../', 'config'));
 var log = require(path.join(__dirname, '../', '../', 'log'));
 var dbUtils = require(path.join(__dirname, 'dbUtils'));
 var https = require('https')
@@ -9,7 +7,6 @@ var request = require('request')
 var cheerio = require('cheerio');
 var fs = require('fs')
 var lwip = require('lwip')
-// var connectionString = config.connectionString
 
 
 var scraper = {}
@@ -161,9 +158,6 @@ scraper.dummy_data = function dummy_data(req,res){
         "INSERT INTO lu_users (name) VALUES ('ben')"
         ,"INSERT INTO lu_users (name) VALUES ('don')"
         ,"INSERT INTO lu_users (name) VALUES ('lainie')"
-        // ,"INSERT INTO lu_contestants (name, eliminated) VALUES ('rachel',false)"
-        // ,"INSERT INTO lu_contestants (name, eliminated) VALUES ('laura',true)"
-        // ,"INSERT INTO lu_contestants (name, eliminated) VALUES ('candi',false)"
         ,"INSERT INTO rel_users_contestants (user_id, contestant_id,rank) VALUES (1,1,1)"
         ,"INSERT INTO rel_users_contestants (user_id, contestant_id,rank) VALUES (1,2,2)"
         ,"INSERT INTO rel_users_contestants (user_id, contestant_id,rank) VALUES (1,3,3)"
@@ -176,10 +170,5 @@ scraper.dummy_data = function dummy_data(req,res){
     ]
     dbUtils.sequential_sql(req,res,dummy_data_commands,0)
 }
-
-
-
-
-
 
 module.exports = scraper

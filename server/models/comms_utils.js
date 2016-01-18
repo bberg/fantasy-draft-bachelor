@@ -21,9 +21,6 @@ comms_utils.respond =function respond(req,res,sqlOutput,code,format){
                 return res.status(code).json(sqlOutput)
             }
             return res.status(code).json(retVal)
-            // if('format' == 'api'){                  
-            // if('format' == 'verbose'){              return res.status(200).json(sqlOutput)}
-            // if('format' == 'error'){                return res.status(500).json(sqlOutput)}
         }
         else{
             return res.status(code).json({'status':'unknown'})

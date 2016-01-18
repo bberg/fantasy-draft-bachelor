@@ -37,9 +37,6 @@ api.process_users_with_mappings = function process_users_with_mappings(req,res,d
     for(i in temp){
         outVals.push(temp[i])
     }
-    // console.log(caller)
-    // users_with_mappings[caller] = data
-    // console.log(users_with_mappings)
     comms_utils.respond(req,res,outVals,200,'api')      
 }
 
