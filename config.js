@@ -4,7 +4,7 @@ var log = require(path.join(__dirname, 'log'));
 log.debug(process.env)
 if(process.env['HOME']=='/home/benashbe'){
     // todo
-    var port = 29673
+    var port = 31041
     var env = 'prod'
     // in prod we need to hide the secrets outside our git directory!
     var secrets = require('/home/benashbe/secrets.js')
