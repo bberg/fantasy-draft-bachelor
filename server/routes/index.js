@@ -4,6 +4,8 @@ var path = require('path');
 var config = require(path.join(__dirname, '../', '../', 'config'));
 var log = require(path.join(__dirname, '../', '../', 'log'));
 var http = require('https')
+var multer = require('multer'); // v1.0.5
+var upload = multer(); // for parsing multipart/form-data
 
 var api = require(path.join(__dirname, '../', 'models', 'api-guts'))
 var scraper = require(path.join(__dirname, '../', 'models', 'scraper'))
@@ -14,6 +16,24 @@ var dbUtils = require(path.join(__dirname, '../', 'models', 'dbUtils'))
 router.get('/api/v1/users', function(req,res,next){                            api.get_all(req,res,'lu_users')})
 router.get('/api/v1/contestants', function(req,res,next){                      api.get_all(req,res,'lu_contestants')})
 router.get('/api/v1/mappings', function(req,res,next){                         api.get_all(req,res,'rel_users_contestants')})
+
+router.get('/api/v1/usersWithMappings', function(req,res,next){                         api.get_users_with_mappings(req,res)})
+
+router.get('/api/v1/users/mappings', function(req,res,next){                     
+    api.get_user_mappings(
+    req,
+    res,
+    'lu_users',
+    'INNER',
+    'rel_users_contestants',
+    'lu_users.user_id',
+    'rel_users_contestants.user_id',
+    'lu_users.name',
+    false,
+    '%'
+           )})
+
+
 
 router.get('/api/v1/users/:user_id', function(req,res,next){                   api.get_where(req,res,'lu_users','user_id',req.params.user_id,'api')})
 router.get('/api/v1/contestants/:contestant_id', function(req,res,next){       api.get_where(req,res,'lu_contestants','contestant_id',req.params.contestant_id,'api')})
@@ -27,6 +47,17 @@ router.get('/api/v1/contestants/:contestant_id/mappings', function(req,res,next)
 router.post('/api/v1/users', function(req,res,next){                           api.insert(req,res,'lu_users')})
 router.post('/api/v1/contestants', function(req,res,next){                     api.insert(req,res,'lu_contestants')})
 router.post('/api/v1/mappings', function(req,res,next){                        api.insert(req,res,'rel_users_contestants')})
+
+// router.post('/api/v1/mappings/form', upload.array(), function(req,res){
+//     // app.use(bodyParser.urlencoded())
+//     console.log(req.body)
+//     res.json(req.body)
+//     // console.log(req.body.user_id);
+//     // console.log(req.body.contestant_id);
+//     // console.log(req.body.rank);
+
+//     // api.insert(req,res,'rel_users_contestants')
+// })
 
 router.delete('/api/v1/users/:user_id', function(req,res,next){                api.delete_where(req,res,'lu_users','user_id',req.params.user_id,'api')})
 router.delete('/api/v1/contestants/:contestant_id', function(req,res,next){    api.delete_where(req,res,'lu_contestants','contestant_id',req.params.contestant_id,'api')})
@@ -56,6 +87,9 @@ router.get('/', function(req,res){
     res.sendFile(path.join(__dirname, '../', '../', 'client', 'views', 'dashboard.html'));
 })
 
+router.get('/edit', function(req,res){
+    res.sendFile(path.join(__dirname, '../', '../', 'client', 'views', 'edit.html'));
+})
 
 
 

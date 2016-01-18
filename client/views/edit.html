@@ -61,31 +61,44 @@
         </ul>
  -->
         <div class="row">
-
-          <div class="col-md-6">
+          <div class="col-md-12">
             <div class="container">
               <div class="header">
                 <h1>Users</h1>
                 <!-- <h1 class="lead">Political Scorecard Conglomerator</h1> -->
               </div>
+              <form>
+                <select ng-model="formData.user_id">
+                  <option ng-repeat="user in usersBasic" name="user_id" value="{{user.user_id}}" >
+                    {{user.name}}
+                  </option> 
+                </select>
+                <select ng-model="formData.contestant_id">
+                  <option ng-repeat="contestant in contestants" name="contestant_id" value="{{contestant.contestant_id}}" >
+                    {{contestant.name}}
+                  </option> 
+                </select>
+                Rank:
+                <select ng-model="formData.rank">
+                  <option ng-repeat="i in ranks" value="{{i}}" name="rank" >
+                    {{i}}
+                  </option> 
+                </select>
+                <input type="submit" value="Submit" ng-click="createMapping()">
+              </form>
               <br>
               <div class="todo-list">
                   <ul>
                       <li ng-repeat="user in users"> 
-                        <h2> {{user.user}}   <span style="font-size:70%">{{user.numRemaining}} picks remain</span> </h2>
-                        
+                        <h3> {{user.user}} </h3>
                           <ul>
                               <li ng-repeat="datum in user.data">
-                                <div class="row">
-                                <div class="col-md-6"> 
-                                  <h4> {{datum.rank}} - {{datum.contestant_name}} {{datum.elimText}}</h4>
-                                </div>
-                                <div class="col-md-6">
-                                  <picture>
-                                    <!-- <source srcset="mdn-logo-wide.png" media="(min-width: 600px)"> -->
-                                    <img src="{{datum.img_url}}" alt="MDN" height="50" width="50">
-                                  </picture>
-                                </div>
+                                <input type="checkbox" ng-click="deleteMapping({{datum}})">
+                                {{datum.rank}} - {{datum.contestant_name}}
+                                <picture>
+                                  <!-- <source srcset="mdn-logo-wide.png" media="(min-width: 600px)"> -->
+                                  <img src="{{datum.img_url}}" alt="MDN" height="50" width="50">
+                                </picture>
                               </li>
                           </ul>
                       </li>
@@ -93,43 +106,6 @@
               </div>
             </div>
           </div>
-
-        <div class="col-md-6">
-          <div class="container">
-            <div class="header">
-              <h1>Contestants</h1>
-              <!-- <h1 class="lead">Political Scorecard Conglomerator</h1> -->
-            </div>
-            <br>
-            <div class="todo-list">
-              <div class="col-md-6">
-              <ul ng-repeat="contestant in contestantsA">
-                <li>
-                  <br>
-                  <h2>{{contestant.name}} </h2>
-                  <!-- {{contestant.elimText}} -->
-                  <picture>
-                    <!-- <source srcset="mdn-logo-wide.png" media="(min-width: 600px)"> -->
-                    <img src="{{contestant.img_url}}" alt="MDN" height="150" width="150">
-                  </picture>
-                  </li>
-                </ul>
-              </div>
-                            <div class="col-md-6">
-              <ul ng-repeat="contestant in contestantsB">
-                <li>
-                  <br>
-                  <h2>{{contestant.name}} </h2>
-                  <picture>
-                    <!-- <source srcset="mdn-logo-wide.png" media="(min-width: 600px)"> -->
-                    <img src="{{contestant.img_url}}" alt="MDN" height="150" width="150">
-                  </picture>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
       </div> <!-- CLOSE CONTROLLER -->
   </div> <!-- CLOSE APP -->
     <!-- scripts -->

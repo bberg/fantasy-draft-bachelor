@@ -12,17 +12,24 @@ var app = angular.module('fantasyDraftBachelor', ["ngTouch","angucomplete-alt"])
 app.controller()
 
 app.controller('dashController', function($scope, $http) {
-    $scope.formData = {};
     $scope.todoData = {};
+
+    // $scope.number = 5;
+    // $scope.getNumber = function(num) {
+    //     return new Array(num);   
+    // }
+    $scope.ranks = [1,2,3,4,5]
     
     // Get all contestants
     $http.get('/api/v1/contestants')
         .success(function(data) {
+            // console.log(data)
             for(i in data){
                 if(data[i] != undefined){
-                    if(data[i]["name"]=="chris-harrison"){
-                        data.splice(i,1)
-                        console.log("removed chris")
+                    // console.log(data[i]['name'])
+                    if(data[i]["name"]=="chris-harrison" || data[i]["name"]=="ben-higgins"){
+                        console.log("removed "+data[i]['name'])
+                        // data.splice(i,1)
                     }
                 }
                 if(data[i]['eliminated']==true){
@@ -32,7 +39,14 @@ app.controller('dashController', function($scope, $http) {
                     data[i]['elimText'] = ''   
                 }
             }
-            $scope.contestants = data;
+            console.log(data.length)
+            $scope.contestants = data.slice(0)
+            console.log($scope.contestants)
+            
+            $scope.contestantsA = data.splice(0,(data.length/2))
+            $scope.contestantsB = data
+            console.log($scope.contestantsA)
+            console.log($scope.contestantsB)
 
         })
         .error(function(error) {
@@ -45,22 +59,84 @@ app.controller('dashController', function($scope, $http) {
     //     .error(function(error) {
     //         console.log('Error getting contestants: ' + error);
     //     })
+    
+    $http.get('/api/v1/usersWithMappings')
+        .success(function(users) {            
+            for(i in users){
+                elimArray = []
+                console.log('user:', users[i])
+                for(j in users[i]['data']){
+                    console.log(users[i]['data'][j])
+                    if(users[i]['data'][j]['eliminated']==true){
+                       users[i]['data'][j]['elimText'] = '- eliminated'
+                       elimArray.push(users[i]['data'][j]['rank'])
+                    }
+                    else{
+                        users[i]['data'][j]['elimText'] = ''   
+                    }
+                }
+                users[i]['elimArray'] = elimArray
+                users[i]['elimArrayFlipped'] = []
+                users[i]['remainingPoints'] = 15
+                for(j in users[i]['elimArray']){
+                    users[i]['elimArrayFlipped'].push(6-users[i]['elimArray'][j])
+                    users[i]['remainingPoints'] = users[i]['remainingPoints'] - (6-users[i]['elimArray'][j])
+
+                }
+                users[i]['numRemaining'] = 5 - users[i]['elimArray'].length
+
+            }
+            $scope.users = users;
+        })
+        .error(function(error) {
+            console.log('Error getting contestants: ' + error);
+            $scope.users = []
+        })
+
+    $scope.getUsersWithMappings = function(){
+        $http.get('/api/v1/usersWithMappings')
+            .success(function(users) {            
+                $scope.users = users;
+            })
+            .error(function(error) {
+                console.log('Error getting contestants: ' + error);
+                $scope.users = []
+            })
+    }
+
+
+
     $http.get('/api/v1/users')
-        .success(function(data) {
-            $scope.users = data;
+        .success(function(usersBasic) {            
+            $scope.usersBasic = usersBasic;
+        })
+        .error(function(error) {
+            console.log('Error getting contestants: ' + error);
+            $scope.usersBasic = []
+        })
+
+    $scope.formData = {}
+    $scope.createMapping = function(data){
+        console.log($scope.formData)
+        $http.post('/api/v1/mappings',$scope.formData)
+            .success(function(result) {
+                $scope.getUsersWithMappings()          
+            })
+            .error(function(error) {
+                console.log('Error getting contestants: ' + error);
+            })
+    }        
+
+    $scope.deleteMapping = function(data){
+        console.log(data)
+        $http.delete('/api/v1/mappings/'+data.did)
+        .success(function(result) {
+            $scope.getUsersWithMappings()          
         })
         .error(function(error) {
             console.log('Error getting contestants: ' + error);
         })
-
-    // $http.get(env+'/api/v1/orgs')
-    //         .success(function(data) {
-    //             $scope.orgList = data;
-    //             // console.log(data);
-    //         })
-    //         .error(function(error) {
-    //             console.log('Error getting orgs: ' + error);
-    //         });    
+    }   
     
 //when a new voter is selected...
     $scope.selectedVoter = function(selectID) {

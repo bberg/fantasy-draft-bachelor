@@ -84,12 +84,21 @@ scraper.image_analysis_listing = function image_analysis_listing(req,res,i,peopl
 }
 
 scraper.analyze_images_for_bw = function analyze_images_for_bw(req,res,people,i){
-    if (i.toString() >= people.length){
-        return people
+    if (i  >= people.length){
+        return scraper.cleanup_non_contestants(req,res,people)
     }
     obj = people[i]
     dir = path.join(__dirname, '../','img', obj.name+'.jpg')
     bw_analysis_outcome_object = scraper.check_image_bw_color(req,res,i,people,obj,dir,25,80,scraper.image_analysis_listing)
+}
+
+scraper.cleanup_non_contestants = function cleanup_non_contestants(req,res,people){
+    var commands = [
+        "DELETE FROM lu_contestants WHERE (name = 'chris-harrison' OR name = 'ben-higgins')",
+        "SELECT * FROM lu_contestants"
+    ]
+    dbUtils.sequential_sql(req,res,commands,0)
+
 }
 
 // this is crude...
@@ -152,9 +161,9 @@ scraper.dummy_data = function dummy_data(req,res){
         "INSERT INTO lu_users (name) VALUES ('ben')"
         ,"INSERT INTO lu_users (name) VALUES ('don')"
         ,"INSERT INTO lu_users (name) VALUES ('lainie')"
-        ,"INSERT INTO lu_contestants (name, eliminated) VALUES ('rachel',false)"
-        ,"INSERT INTO lu_contestants (name, eliminated) VALUES ('laura',true)"
-        ,"INSERT INTO lu_contestants (name, eliminated) VALUES ('candi',false)"
+        // ,"INSERT INTO lu_contestants (name, eliminated) VALUES ('rachel',false)"
+        // ,"INSERT INTO lu_contestants (name, eliminated) VALUES ('laura',true)"
+        // ,"INSERT INTO lu_contestants (name, eliminated) VALUES ('candi',false)"
         ,"INSERT INTO rel_users_contestants (user_id, contestant_id,rank) VALUES (1,1,1)"
         ,"INSERT INTO rel_users_contestants (user_id, contestant_id,rank) VALUES (1,2,2)"
         ,"INSERT INTO rel_users_contestants (user_id, contestant_id,rank) VALUES (1,3,3)"

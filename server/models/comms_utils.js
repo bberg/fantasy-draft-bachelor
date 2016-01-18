@@ -8,12 +8,17 @@ comms_utils = {}
 comms_utils.respond =function respond(req,res,sqlOutput,code,format){
     log.error('respond NOW: '+ sqlOutput)
     if(code == 200 || code == 201){
-        if(sqlOutput != undefined){
-            if (sqlOutput['rows'].length == 1){
-                retVal = sqlOutput['rows'][0]
+        if(sqlOutput != undefined ){
+            if(sqlOutput['rows'] != undefined){
+                if (sqlOutput['rows'].length == 1){
+                    retVal = sqlOutput['rows'][0]
+                }
+                else{
+                    retVal = sqlOutput['rows']   
+                }
             }
             else{
-                retVal = sqlOutput['rows']   
+                return res.status(code).json(sqlOutput)
             }
             return res.status(code).json(retVal)
             // if('format' == 'api'){                  
