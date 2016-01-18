@@ -27,42 +27,42 @@ app.use(express.static(path.join(__dirname, './client', 'public')));
 
 app.set('json spaces', 40);
 app.use('/', routes);
-
+log.error('LISTENING ON '+config.port)
 app.listen(config.port);
-app.on('error', onError);
-app.on('listening', onListening);
+// app.on('error', onError);
+// app.on('listening', onListening);
 
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+// function onError(error) {
+//   if (error.syscall !== 'listen') {
+//     throw error;
+//   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+//   var bind = typeof port === 'string'
+//     ? 'Pipe ' + port
+//     : 'Port ' + port;
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      log.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      log.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
+//   // handle specific listen errors with friendly messages
+//   switch (error.code) {
+//     case 'EACCES':
+//       log.error(bind + ' requires elevated privileges');
+//       process.exit(1);
+//       break;
+//     case 'EADDRINUSE':
+//       log.error(bind + ' is already in use');
+//       process.exit(1);
+//       break;
+//     default:
+//       throw error;
+//   }
+// }
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  log.debug('Listening on ' + bind);
-}
+// function onListening() {
+//   var addr = server.address();
+//   var bind = typeof addr === 'string'
+//     ? 'pipe ' + addr
+//     : 'port ' + addr.port;
+//   log.debug('Listening on ' + bind);
+// }
 
 module.exports = app;
 
