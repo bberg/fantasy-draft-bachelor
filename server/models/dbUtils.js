@@ -26,7 +26,7 @@ dbUtils.sequential_sql = function sequential_sql(req,res,sqlCommandArray,index){
         }
         sql = sqlCommandArray[index]
         // log.error(typeof(sql))
-        log.error('index: '+index.toString()+ ' sql to run: '+ sql)
+        log.debug('index: '+index.toString()+ ' sql to run: '+ sql)
 
         client.query(sql, function(err, result){
             if(err) {
@@ -100,7 +100,7 @@ dbUtils.get_user_mappings = function get_user_mappings(req,res,return_response,t
 
 // compose a list of SQL commands to send to update a list of objects according to the where key
 dbUtils.insert_or_update_by_object = function insert_or_update_by_object(object,table,where_key){
-    log.error('dbUtils.update_by_object' + object)
+    log.debug('dbUtils.update_by_object' + object)
     keys = ''
     vals = ''
     for (i in object){
@@ -118,14 +118,14 @@ dbUtils.insert_or_update_by_object = function insert_or_update_by_object(object,
             if(SQLerror) {
                 return log.error('error running query', SQLerror)
             }
-            log.error('query result',result)
+            log.debug('query result',result)
             done()
             pg.end()
         })
     })
 
     sql = 'UPDATE '+table+' SET ( ' +keys+ ' ) = ( '+vals+' ) WHERE '+where_key+' = \''+object[where_key]+'\''
-    log.error("running sql: "+sql)
+    log.debug("running sql: "+sql)
     pg.connect(connectionString, function(err1, client, done) {
         if(err1) {
             return log.error('could not connect to postgres', err1)
@@ -135,7 +135,7 @@ dbUtils.insert_or_update_by_object = function insert_or_update_by_object(object,
                 return log.error('error running query', err2)
             }
 
-            log.error('query result',result)
+            log.debug('query result',result)
             done()
             pg.end()
         })
@@ -145,7 +145,7 @@ dbUtils.insert_or_update_by_object = function insert_or_update_by_object(object,
 dbUtils.insert = function insert(req,res,table,verbosity){
     object = req.body
     console.log(object)
-    log.error('dbUtils.insert' + object)
+    log.debug('dbUtils.insert' + object)
     keys = ''
     vals = ''
     for (i in object){
@@ -166,7 +166,7 @@ dbUtils.insert = function insert(req,res,table,verbosity){
                 log.error('error running query', SQLerror)
                 return comms_utils.respond(req,res,SQLerror,500,'error')
             }
-            log.error('query result',result)
+            log.debug('query result',result)
             done()
             pg.end()
             return comms_utils.respond(req,res,result,201,verbosity)
@@ -177,7 +177,7 @@ dbUtils.insert = function insert(req,res,table,verbosity){
 dbUtils.delete_where = function delete_where(req,res,table,id_key,id,verbosity){
     sql = 'DELETE from '+table+' WHERE ' +id_key+ ' =  $1'
     vars = [id]
-    log.error("running sql: "+sql+"with vars: "+vars)
+    log.debug("running sql: "+sql+"with vars: "+vars)
     pg.connect(connectionString, function(err1, client, done) {
         if(err1) {
             log.error('could not connect to postgres', err1)
@@ -188,7 +188,7 @@ dbUtils.delete_where = function delete_where(req,res,table,id_key,id,verbosity){
                 log.error('error running query', err2)
                 return comms_utils.respond(req,res,err2,'error')
             }
-            log.error('query result',result['rows'])
+            log.debug('query result',result['rows'])
             done()
             pg.end()
             return comms_utils.respond(req,res,result,204,'api')
@@ -199,7 +199,7 @@ dbUtils.delete_where = function delete_where(req,res,table,id_key,id,verbosity){
 dbUtils.get_where = function get_where(req,res,table,id_key,id,verbosity){
     sql = 'SELECT * from '+table+' WHERE ' +id_key+ ' =  $1'
     vars = [id]
-    log.error("running sql: "+sql+"with vars: "+vars)
+    log.debug("running sql: "+sql+"with vars: "+vars)
     pg.connect(connectionString, function(err1, client, done) {
         if(err1) {
             log.error('could not connect to postgres', err1)
@@ -210,7 +210,7 @@ dbUtils.get_where = function get_where(req,res,table,id_key,id,verbosity){
                 log.error('error running query', err2)
                 return comms_utils.respond(req,res,err2,500,'error')
             }
-            log.error('query result',result['rows'])
+            log.debug('query result',result['rows'])
             done()
             pg.end()
             return comms_utils.respond(req,res,result,200,'api')
@@ -227,7 +227,7 @@ dbUtils.get_where_join = function get_join_where(req,res,join_object,verbosity,r
     }
     sql = 'SELECT * from '+join_object.left_table+' '+join_object.join_type+' JOIN '+join_object.right_table+' ON ( '+join_object.left_key+' = '+join_object.right_key+' )  WHERE ' +join_object.where_key+ ' '+where_operator+'  $1'
     vars = [join_object.where_val]
-    log.error("running sql: "+sql+"with vars: "+vars)
+    log.debug("running sql: "+sql+"with vars: "+vars)
     pg.connect(connectionString, function(err1, client, done) {
         if(err1) {
             log.error('could not connect to postgres', err1)
@@ -244,7 +244,7 @@ dbUtils.get_where_join = function get_join_where(req,res,join_object,verbosity,r
             else{
                 return return_response(req,res,result['rows'],token)
             }
-            log.error('query result',result['rows'])
+            log.debug('query result',result['rows'])
             done()
             pg.end()
             

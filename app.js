@@ -8,6 +8,8 @@ var express = require('express');
 var log = require(path.join(__dirname, 'log'));
 var config = require(path.join(__dirname, 'config'));
 var app = express();
+var request = require('request')
+var http = require('https')
 
 log.error('---- APP RESTART ----');
 
@@ -62,6 +64,26 @@ function onListening() {
     : 'port ' + addr.port;
   log.debug('Listening on ' + bind);
 }
+
+function pollForUpdates(){
+    log.error("getting cast page")
+    url = config.env_url+"/update"
+    request(url, function(error,response,html){
+        if(error){
+            log.error(error)
+            log.error(response)
+            return log.error('error checking for updates!')
+        }
+        else{
+            log.error('checked for updates! code:'+response.statusCode)
+            log.error({"update_data":JSON.parse(html)})
+            return
+        }
+    })
+}
+// setInterval(pollForUpdates,10000)
+// every 30 minutes, check the website for updates!
+setInterval(pollForUpdates,30*60*1000) 
 
 module.exports = app;
 

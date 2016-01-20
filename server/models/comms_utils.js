@@ -6,7 +6,7 @@ var http = require('https')
 comms_utils = {}
 
 comms_utils.respond =function respond(req,res,sqlOutput,code,format){
-    log.error('respond NOW: '+ sqlOutput)
+    // log.error('respond NOW: '+ sqlOutput)
     if(code == 200 || code == 201){
         if(sqlOutput != undefined ){
             if(sqlOutput['rows'] != undefined){

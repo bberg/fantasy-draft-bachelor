@@ -37,14 +37,14 @@ scraper.parse_cast_page = function parse_cast_page(req,res,html){
     $('.tiles').children().each(function(i, elem) {
         img = $(this).find('.tablet-source').attr('srcset')
         url = $(this).find('a').attr('href')
-        // log.error(url)
+        log.debug(url)
         if(url != undefined){
             name = url.split("/").pop()
             img = img.split(",")[1]
             img = img.split("\t").pop()
             img = img.split(" ")[0]
-            log.error(name)
-            log.error(img)
+            log.debug(name)
+            log.debug(img)
             
             people.push({"name":name,"img_url":img})
         }
@@ -75,7 +75,7 @@ scraper.image_analysis_listing = function image_analysis_listing(req,res,i,peopl
         eliminated_update_val = false
     }
     people[i]['eliminated'] = eliminated_update_val
-    log.error('image_analysis_listing' + i + people[i])
+    log.debug('image_analysis_listing' + i + people[i])
     dbUtils.insert_or_update_by_object(people[i],'lu_contestants','name')
     scraper.analyze_images_for_bw(req,res,people,i+1)
 }
@@ -100,7 +100,7 @@ scraper.cleanup_non_contestants = function cleanup_non_contestants(req,res,peopl
 
 // this is crude...
 scraper.check_image_bw_color = function check_image_bw_color(req,res,index_pass_through,people,person_object,img_dir,pct_pixels_to_analyze,threshold_pct,next){
-    log.error(img_dir)
+    log.debug(img_dir)
     image = lwip.open(img_dir,function(err, image){
       // check err...
       // define a batch of manipulations and save to disk as JPEG:
@@ -135,7 +135,7 @@ scraper.check_image_bw_color = function check_image_bw_color(req,res,index_pass_
             bw_outcome = false
         }
         result = {"bw_outcome":bw_outcome,"threshold_pct":threshold_pct,"pct_pixels_bw":pct_pixels_bw,"bw_pixel_count":bw_pixel_count,"n_pixels_to_analyze":n_pixels_to_analyze}
-        log.error(result)
+        log.debug(result)
         return next(req,res,index_pass_through,people,result)
     })
 }

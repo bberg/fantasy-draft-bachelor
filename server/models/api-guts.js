@@ -64,5 +64,4 @@ api.delete_where = function delete_where(req,res,table,id_key,id,verbosity){
     dbUtils.delete_where(req,res,table,id_key,id,verbosity)
 }
 
-
 module.exports = api
